@@ -1,0 +1,10 @@
+@import "./_variables.scss";
+.login_container {
+  form {
+    .email_container {
+      button {
+        border-radius: $borderRadius;
+      }
+    }
+  }
+}

@@ -1,9 +1,14 @@
 # TrackMember
+This is an app built with MERN and TypeScript.
 
-## Stacks(plan)
-TypeScript to understand the concepts, React to practice hooks, Google Map API for tracking members, SMS or email API to comfirmation, 
+## Stacks
+* Plan: React, React Router Dom, Express, MongoDB, SCSS
+* APIs: Map APIs, text, email
 
-### Project Start Date
-Sep 27, 2022
-
-### MEMO
+## Flows
+* User can login with email or text verification
+* Add or Remove members
+* Added member get confirmation email or text
+* Only added verified, confirmed member
+* Share their current location
+* Send alert
