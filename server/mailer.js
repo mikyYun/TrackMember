@@ -10,9 +10,7 @@ const mailer = async (email) => {
     // secure: false,
     auth: {
       user: process.env.AUTH_MAIL,
-      // user: "TrackMember",
-      // pass: process.env.AUTH_PASS
-      pass: "omouzfpxltwlxirj"
+      pass: process.env.AUTH_PASS
     }
   })
   console.log(transporter)
@@ -20,7 +18,6 @@ const mailer = async (email) => {
     from: "TrackMember",
     to: email,
     subject: "Please confirm the authentication to login",
-    // html: emailTemplete,
     text: "CLICK"
   })
 
