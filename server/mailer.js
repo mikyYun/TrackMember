@@ -13,14 +13,18 @@ const mailer = async (email) => {
       pass: process.env.AUTH_PASS
     }
   })
-  console.log(transporter)
   const mailOptions = await transporter.sendMail({
     from: "TrackMember",
     to: email,
     subject: "Please confirm the authentication to login",
-    text: "CLICK"
+    text: "CLICK",
+    html: `
+      <p>User Authenticate Confirmation Email FROM TrackMember</p>
+      <button style="background:#a6a6ff; padding:10px; border-radius:5px;">
+      <a href="${process.env.AUTHENTICATE}${email}" style="text-tecoration:none">Authenticate</a>
+      </button>
+    `
   })
-
   transporter.sendMail(mailOptions, (err, info) => {
     if (err) return console.log("ERROR", err);
     console.log("FINISH SENDING EMAIL", info);

@@ -20,6 +20,15 @@ app.post("/", (req, res) => {
   res.status(200).send({data: "GOOD"});
 });
 
+app.get("/user/authenticate/:email", (req, res) => {
+  if (!req.params.email) return;
+  const email = req.params.email
+
+  res.status(200).send(`Verified. Thank you.<a href=${process.env.FRONT_URL}>Back to the website</a>`)
+
+  console.log("AUTHENTICATE", email)
+})
+
 app.listen(PORT, () => {
   console.log(`SERVER start linstening on port ${PORT}`);
 });
