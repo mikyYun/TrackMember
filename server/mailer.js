@@ -4,10 +4,7 @@ dotenv.config();
 const mailer = async (email) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
-    // host: "smtp.gmail.com",
     port: 587, // single connection
-    // posrt: 465 // pooled connections
-    // secure: false,
     auth: {
       user: process.env.AUTH_MAIL,
       pass: process.env.AUTH_PASS
@@ -25,6 +22,7 @@ const mailer = async (email) => {
       </button>
     `
   })
+
   transporter.sendMail(mailOptions, (err, info) => {
     if (err) return console.log("ERROR", err);
     console.log("FINISH SENDING EMAIL", info);

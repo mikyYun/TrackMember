@@ -18,4 +18,16 @@ const fetchLogin = (email) => {
   })
 }
 
-export {fetchLogin};
+const fetchSet = (email) => {
+  fetch("http://localhost:3001/api/post/user/authenticate/set", {
+    method: "POST",
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({email})
+  })
+  .catch(err => console.error("SET ERROR", err))
+}
+
+export {fetchLogin, fetchSet};

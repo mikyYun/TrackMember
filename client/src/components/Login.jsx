@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/Login.scss"
-import { fetchLogin } from "../fetch/fetch";
+import { fetchLogin, fetchSet } from "../fetch/fetch";
 
 const Login = () => {
   const [email, setEmail] = React.useState("")
@@ -9,6 +9,7 @@ const Login = () => {
     e.preventDefault();
     // console.log("SUBMIT", email)
     fetchLogin(email)
+    fetchSet(email)
   }
 
   const updateEmail = (e) => {
