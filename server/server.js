@@ -3,9 +3,9 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import db from "./db.js";
-import { EmailModel } from "./models/model.js";
+// import { Models } from "./models/model.js";
 
-import routes from "./routes/routes.js";
+import routes from "./routes/api.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
