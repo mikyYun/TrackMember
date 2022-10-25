@@ -42,7 +42,7 @@ const findAll = (collection) => {
   //   // return db[collection.collection]?.find({});
 };
 
-
+/** FIND USER AND IF NOT EXIST, REGISTER */
 const find = async (email, username) => {
   return await User.find({ email }, (err, doc) => {
     if (err) return console.error("Finding email failed", err);
@@ -63,7 +63,7 @@ const find = async (email, username) => {
 //   decodeToken(token, email)
 // }
 
-const updateVerify = (email, username) => {
+const setToken = (email) => {
   const token = generateToken(email);
 
   User.findOneAndUpdate({ email }, { token }, (err, doc) => {
@@ -75,13 +75,21 @@ const updateVerify = (email, username) => {
 
 const startVerification = async ({ email, username }) => {
   find(email, username);
-  updateVerify(email, username);
+  setToken(email);
 };
 
-const verificationProcess = async (email) => {
-
+const checkVerification = async (email) => {
+  User.findOneAndUpdate({ email }, { isVerified: true }, (err, doc) => {
+    if (err || !doc) return console.error("Verify update failed", err);
+    console.log("SUCCESS", doc);
+  }).clone()
+  .then(doc => {
+    const {isVerified, token, email} = doc
+    console.log("REGISTERED USER", isVerified, token, email);
+  }) 
+  .catch(err =>  console.error(err))
 //   decodeToken(token, email)
 
 }
 
-export { startVerification, verificationProcess };
+export { startVerification, checkVerification };

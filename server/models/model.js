@@ -18,6 +18,7 @@ const UserModel = new Schema({
   isVerified: {
     type: Boolean,
     require: true,
+    index: true,
     default: false
   },
   token: {
