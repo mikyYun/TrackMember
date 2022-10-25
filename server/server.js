@@ -2,7 +2,9 @@ import mailer from "./mailer.js";
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import db from "./db.js";
+import { generateToken } from "./token/token.js";
+
+// import db from "./db.js";
 // import { Models } from "./models/model.js";
 
 import routes from "./routes/api.js";

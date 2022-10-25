@@ -2,9 +2,10 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const UserModel = new Schema({
-  local: {
-    username: String,
-    // required: true
+  username: {
+    id: String,
+    type: String,
+    required: true,
   },
   email: {
     id: String,
@@ -20,8 +21,8 @@ const UserModel = new Schema({
     default: false
   },
   token: {
-    type: Schema.Types.ObjectID,
-    ref: "Token",
+    type: String,
+    // ref: "Token",
     default: null
   }
 })

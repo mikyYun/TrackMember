@@ -2,16 +2,14 @@ import nodemailer from "nodemailer"
 import dotenv from "dotenv"
 // const Jwt = require("jsonwebtoken")
 import Jwt from "jsonwebtoken"
+// import {generateToken} from "./token/token.js"
 
 dotenv.config();
 const mailer = async (email) => {
   
   /** GENERATE TOKEN FOR 1 DAY */
-  const token = Jwt.sign({
-    email,
-    exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24)
-  }, email)
-  console.log("TOKEN", token)
+  // const token = generateToken(email);
+  // console.log("TOKEN", token)
   
   
   const transporter = nodemailer.createTransport({
