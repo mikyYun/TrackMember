@@ -1,78 +1,103 @@
 import express from "express";
 import Jwt from "jsonwebtoken";
 // import { User } from "../models/model.js";
-import { startVerification, checkVerification } from "../db.js";
-import { decodeToken } from "../token/token.js";
+import { checkVerification, findUserWith, updateUsername, createUser, updateToken, completeVerify, updateTokenAndIsVerified } from "../db.js";
+import { generateToken, decodeToken, isExpired } from "../token/token.js";
+import mailer from "../mailer.js";
 
 // console.log("MD", SchemaModel)
 const routes = express.Router();
 /************* API ROUTER *************/
-// test
-routes.post("/post", (req, res) => {
-  // // const user = new User({"username": "TEST"})
-  // const all = findAll({
-  //   collection: "User",
-  //   username: "TEST",
-  //   email: "mkyun2714@gmail.com"
-  // });
 
-  // console.log("USER", all);
-
-  // find matching user
-  // const check = find("mkyun2714@gmail.com")
-  // console.log("CHECK", check)
-
-  const email = "mkyun2714@gmail.com";
-  // const token = createToken(email)
-  // console.log("TT", token)
-  const back = decodeToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1reXVuMjcxNEBnbWFpbC5jb20iLCJleHAiOjE2NjY3NDg5OTksImlhdCI6MTY2NjY2MjU5OX0.RG-DWnR-UsxKDbC_GSerSB3nKVXnl-iyFXQmSuvW0eI", email);
-  console.log("BACK", back);
-  res.send("POST API");
-});
 
 // clicked email verification button
-routes.get("/user/authenticate/:email", (req, res) => {
-  if (!req.params.email) return;
-  const email = req.params.email;
-  
-  checkVerification(email)
-  console.log("VERIFIED")
-  // if (true) { // 첫번째 요청
-  //   res.status(200).send(`Verified. Thank you.<a href=${process.env.FRONT_URL}>Back to the website</a>`);
-  // } else { // 첫번째 인증 이후 거절
+routes.get("/user/authenticate/:token", async (req, res) => {
+  console.log("VERIFICATIPN REQUEST");
+  if (!req.params.token) return;
+  const token = req.params.token;
+  // only true for one time click
+  await checkVerification(token)
+    .then(isVerified => {
+      console.log("THIS", isVerified)
+      if (isVerified) {
+        return res.status(200).send(`Verified. Thank you.<a href=${process.env.FRONT_URL}>Back to the website</a>`);
+      }
+      return res.status(400).send(`Token already used or expired. Please try login again`);
+    })
+    .catch(err => console.error("WRONG TOKEN", err));
+  // console.log("VERIFIED", isVerified);
+
+  // if (!isVerified) {
+  // } else {
   //   res.status(400).send(`Expired request token. Please try login again`);
   // }
 });
 
-routes.post("/user/authenticate/:email", (req, res) => {
+// User Login
+routes.post("/login/:email", async (req, res) => {
+  console.log("LOGIN REQUEST");
   if (!req.params.email) return;
-  const email = req.params.email;
-
-
-  if (true) { // 첫번째 요청
-    res.status(200).send(`Verified. Thank you.<a href=${process.env.FRONT_URL}>Back to the website</a>`);
-  } else { // 첫번째 인증 이후 거절
-    res.status(400).send(`Expired request token. Please try login again`);
-  }
-});
-
-routes.post("/token/:email", async (req, res) => {
-  if (!req.params.email || !req.query.email) return;
   // POSTMAN TEST
-  const email = req.query.email;
-  const username = req.query.username;
-  
+  // const email = req.query.email;
+  // const username = req.query.username;
   // REAL
-  // const email = req.body.email;
-  // const username = req.body.username;
+  const email = req.body.email;
+  const username = req.body.username;
 
+  /** BEFORE SEND MAIL, VERIFY USER ALREADY VERIFIED AND TOKEN IS NOT EXPIRED */
   const userInfo = {
     email,
     username
-  }
-  await startVerification(userInfo)
-    .then(() => res.status(200).send(true))
-    .catch(err => res.status(400).send(err))
+  };
+
+  await findUserWith(userInfo)
+    .then(user => {
+      // if user doesn't exist, create one
+      if (!user) {
+        const token = generateToken(email);
+        createUser(userInfo, token);
+        mailer(email, token);
+        return;
+      }
+      return user;
+    })
+    .then(user => {
+      if (user) {
+        if (username && user.username !== username) updateUsername(user, username);
+        // if isVerified = true => check token life
+        const { isVerified, email } = user;
+        const token = generateToken(email);
+        if (isVerified) {
+          const decodedToken = decodeToken(token, email);
+          const isExpiredToken = isExpired(decodedToken.exp);
+          if (isExpiredToken) {
+            // if token is expired, update isVerified false, generate new token and send email
+            updateTokenAndIsVerified(user, token);
+            mailer(email, token);
+          } else {
+            // if token is valid, update token and send ok to go main page
+            updateToken(user, token);
+            // res.status(200).send({ isVerified: true });
+            res.redirect(301, "http://localhost:3000/main")
+          }
+        } else {
+          updateTokenAndIsVerified(user, token);
+          mailer(email, token);
+        }
+
+      }
+
+    })
+    .catch(err => res.status(400).send(err));
+  // SEND MAIL WITH TOKEN
+  // mailer(email, token);
+
+  // userInfo.token = token;
+
+
+  // await findUserAndSetToken(userInfo)
+  //   .then(() => res.status(200).send(true))
+  //   .catch(err => res.status(400).send(err));
 });
 
 export default routes;

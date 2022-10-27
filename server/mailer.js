@@ -5,8 +5,8 @@ import Jwt from "jsonwebtoken"
 // import {generateToken} from "./token/token.js"
 
 dotenv.config();
-const mailer = async (email) => {
-  
+const mailer = async (email, token) => {
+  console.log("SENDING")
   /** GENERATE TOKEN FOR 1 DAY */
   // const token = generateToken(email);
   // console.log("TOKEN", token)
@@ -29,8 +29,9 @@ const mailer = async (email) => {
     text: "CLICK",
     html: `
       <p>User Authenticate Confirmation Email FROM TrackMember</p>
+      <p1>This email valid only once</p1>
       <button style="background:#a6a6ff; padding:10px; border-radius:5px;">
-      <a href="${process.env.AUTHENTICATE}${email}" style="text-tecoration:none">Authenticate</a>
+      <a href="${process.env.AUTHENTICATE}${token}" style="text-tecoration:none">Authenticate</a>
       </button>
     `
   })

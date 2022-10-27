@@ -3,7 +3,7 @@ import { User, Token } from "./models/model.js";
 const DATABASE_URL = process.env.DATABASE_URL;
 const mongo = await mongoose.connect(DATABASE_URL);
 import Jwt from "jsonwebtoken";
-import { generateToken, decodeToken } from "./token/token.js";
+import { generateToken, decodeToken, isExpired } from "./token/token.js";
 
 const db = mongo.connection;
 
@@ -16,80 +16,84 @@ db.once("connected", () => {
   console.log("DATABASE CONNECTED");
 });
 
-const createCollection = ({ username, email }) => {
-  return User.create({ username, email }, (err, doc) => {
+const createUser = ({ username, email }, token) => {
+  return User.create({ username, email }, (err, user) => {
     if (err) return console.error("Create Err: ", err);
-    console.log("CREATE", doc);
-    return doc;
+    console.log("CREATE", user);
+    updateToken(user, token);
+    // return doc;
   });
 };
 
-const insertUser = (data) => {
-  User.insertOne(data); // data = {}
+const updateUsername = (user, username) => {
+  user.username = username;
+  user.save(err => {
+    if (err) console.error("Update username failed");
+  });
 };
 
-const findAll = (collection) => {
-  //   User.find({}, (err, doc) => {
-  //     if (err) return console.error("No User", err);
-  //     console.log("USER DOC", doc);
-  //   });
-
-  //   console.log("1");
-  //   if (!db[collection.collection]) createCollection(collection);
-  //   console.log("2");
-  //   // console.log(db);
-  //   if (db[collection.collection]) console.log("EXIST");
-  //   // return db[collection.collection]?.find({});
+const updateToken = (user, token) => {
+  user.token = token;
+  user.save(err => {
+    if (err) console.error("Update token failed");
+  });
 };
 
-/** FIND USER AND IF NOT EXIST, REGISTER */
-const find = async (email, username) => {
-  return await User.find({ email }, (err, doc) => {
-    if (err) return console.error("Finding email failed", err);
-    console.log("EXIST EMAIL", doc);
-    return doc;
-  }).clone()
-    .then(userData => {
-      if (userData.length === 0) {
-        return createCollection({ email, username });
-      }
-    })
-    .catch(err => console.error(err));
+const updateTokenAndIsVerified = (user, token) => {
+  user.token = token;
+  user.isVerified = false;
+  user.save(err => {
+    if (err) console.error("Update token failed");
+  });
 };
 
-// console.log("FIND", find({email:"test@test.com"}))
-// console.log("THIS")
-// const decodeToken = (token, email) => {
-//   decodeToken(token, email)
-// }
+const completeVerify = (user) => {
+  user.isVerified = true;
+  user.save(err => {
+    if (err) console.error("Update token failed");
+  });
+};
 
-const setToken = (email) => {
-  const token = generateToken(email);
+const setVerify = (user) => {
+  user.isVerified = true;
+  user.save(err => {
+    if (err) console.error("Update token failed");
+  });
+};
 
-  User.findOneAndUpdate({ email }, { token }, (err, doc) => {
-    if (err) return console.error("Verify update failed", err);
-    console.log("SUCCESS", doc);
+/** FIND USER with email*/
+const findUserWith = async (userInfo) => {
+  return await User.findOne(userInfo.token ? { token: userInfo.token } : { email: userInfo.email }, (err, user) => {
+    if (err) return console.error("Failed finding user with given token", err);
+    return user;
   }).clone();
 };
 
-
-const startVerification = async ({ email, username }) => {
-  find(email, username);
-  setToken(email);
+/** Email verification button only once */
+const checkVerification = (tokenFromEmail) => {
+  // find token is expired
+  const userInfo = { token: tokenFromEmail };
+  return findUserWith(userInfo)
+    .then(user => {
+      if (!user) return false;
+      const { isVerified, email, token } = user;
+      if (isVerified) { // reuse email token
+        console.log("user");
+        return false;
+      } else {
+        const decodedToken = decodeToken(token, email);
+        const isExpiredToken = isExpired(decodedToken.exp);
+        if (tokenFromEmail === token) {
+          if (isExpiredToken) {
+            return false;
+          }
+          setVerify(user);
+          return true;
+        }
+      }
+    })
+    .catch(err => console.error("Verification failed", err));
 };
 
-const checkVerification = async (email) => {
-  User.findOneAndUpdate({ email }, { isVerified: true }, (err, doc) => {
-    if (err || !doc) return console.error("Verify update failed", err);
-    console.log("SUCCESS", doc);
-  }).clone()
-  .then(doc => {
-    const {isVerified, token, email} = doc
-    console.log("REGISTERED USER", isVerified, token, email);
-  }) 
-  .catch(err =>  console.error(err))
-//   decodeToken(token, email)
 
-}
-
-export { startVerification, checkVerification };
+export { checkVerification, findUserWith, updateUsername, createUser, updateToken, completeVerify, updateTokenAndIsVerified };

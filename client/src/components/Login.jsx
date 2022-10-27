@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/Login.scss"
-import { fetchLogin, fetchSetToken } from "../fetch/fetch";
+import { fetchSetToken } from "../fetch/fetch";
 
 const Login = () => {
   const [email, setEmail] = React.useState("")
@@ -9,7 +9,6 @@ const Login = () => {
   const submitEmail = (e) => {
     e.preventDefault();
     fetchSetToken(email, username)
-    fetchLogin(email, username)
   }
 
 
@@ -25,8 +24,8 @@ const Login = () => {
     <div className="login_container">
       <form action="submit" className="login_form">
         <div className="email_container">
-          <input type="email" placeholder="email@email.com" className="email" onChange={updateEmail}/>
-          <input type="text" placeholder="John Doe" className="username" onChange={updateUsername}/>
+          <input type="email" placeholder="email@email.com" className="email" onChange={updateEmail} required/>
+          <input type="text" placeholder="John Doe" className="username" onChange={updateUsername} required/>
           <button onClick={submitEmail}>Login</button>
         </div>
       </form>
