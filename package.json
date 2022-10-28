@@ -4,6 +4,7 @@
   "description": "This is an app built with MERN and TypeScript.",
   "main": "server/server.js",
   "type": "module",
+  "proxy": "http://localhost:3000/",
   "scripts": {
     "start": "concurrently \"nodemon ./server/server.js\" \"cd client && npm start\"",
     "test": "echo \"Error: no test specified\" && exit 1",

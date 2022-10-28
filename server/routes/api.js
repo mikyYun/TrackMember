@@ -22,7 +22,7 @@ routes.get("/user/authenticate/:token", async (req, res) => {
       if (isVerified) {
         return res.status(200).send(`Verified. Thank you.<a href=${process.env.FRONT_URL}>Back to the website</a>`);
       }
-      return res.status(400).send(`Token already used or expired. Please try login again`);
+      return res.status(404).send(`Token already used or expired. Please try login again`);
     })
     .catch(err => console.error("WRONG TOKEN", err));
   // console.log("VERIFIED", isVerified);
@@ -33,9 +33,11 @@ routes.get("/user/authenticate/:token", async (req, res) => {
   // }
 });
 
+// localhost:3001/api
 // User Login
 routes.post("/login/:email", async (req, res) => {
   console.log("LOGIN REQUEST");
+  // res.send('GET request to the homepage')
   if (!req.params.email) return;
   // POSTMAN TEST
   // const email = req.query.email;
@@ -77,16 +79,20 @@ routes.post("/login/:email", async (req, res) => {
           } else {
             // if token is valid, update token and send ok to go main page
             updateToken(user, token);
-            // res.status(200).send({ isVerified: true });
-            res.redirect(301, "http://localhost:3000/main")
+            // res.method = "get";
+
+            // res.writeHead(301, {
+            //   // location: process.env.FRONT_URL + "main"
+            //   Location: "http://localhost:3000/main"
+            // }).end();
+            return res.status(200).send({pass: true});
           }
         } else {
           updateTokenAndIsVerified(user, token);
           mailer(email, token);
         }
-
       }
-
+      return res.status(200).send({pass: false})
     })
     .catch(err => res.status(400).send(err));
   // SEND MAIL WITH TOKEN

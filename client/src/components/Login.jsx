@@ -5,6 +5,7 @@ import { fetchSetToken } from "../fetch/fetch";
 const Login = () => {
   const [email, setEmail] = React.useState("")
   const [username, setUsername] = React.useState("")
+  console.log("user");
 
   const submitEmail = (e) => {
     e.preventDefault();

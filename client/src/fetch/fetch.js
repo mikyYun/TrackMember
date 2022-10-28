@@ -5,14 +5,22 @@ const fetchSetToken = (email, username) => {
       'Accept': 'application/json, text/plain, */*',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({email, username})
+    body: JSON.stringify({ email, username })
   })
-  // .then(res => {
-  //   console.log(res)
-  //   return
-  //   // if (res) return true;
-  // })
-  .catch(err => console.error("SET ERROR", err))
-}
+    .then(res => {
+        console.log(res)
+      //   return
+      
+      // if (res) {
+        // res.redirected("/main")
+        // res.writeHead(301, {
+        //   Location: "/main"
+        // })
+        // return true;
 
-export {fetchSetToken};
+      // }
+    })
+    .catch(err => console.error("SET ERROR", err));
+};
+
+export { fetchSetToken };
