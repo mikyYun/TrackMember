@@ -1,0 +1,15 @@
+@import "./_variables.scss";
+.waiting {
+  opacity: .9;
+  .waiting_img {
+    width: 100%;
+    max-width: 100px;
+  }
+  .waiting_text {
+    font-size: 2rem;
+    color: $forthColor;
+  }
+  &.hide {
+    visibility: hidden;
+  }
+}

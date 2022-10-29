@@ -1,10 +1,26 @@
 @import "./_variables.scss";
 .login_container {
+  background-color: $thirdColor;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   form {
+    margin-bottom: 35%;
     .email_container {
+      input {
+        padding-left: 0.5rem;
+      }
       button {
         border-radius: $borderRadius;
       }
+    }
+    .error {
+      font-size: 2rem;
+      color: $warning_wh;
+    }
+    .error_hide {
+      visibility: hidden;
     }
   }
 }

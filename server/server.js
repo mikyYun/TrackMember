@@ -24,7 +24,6 @@ app.post("/", (req, res) => {
   res.status(200).send({ data: "GOOD" });
 });
 
-
 app.listen(PORT, () => {
   console.log(`SERVER start linstening on port ${PORT}`);
 });
