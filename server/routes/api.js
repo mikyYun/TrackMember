@@ -18,7 +18,7 @@ routes.get("/user/authenticate/:token", async (req, res) => {
   // only true for one time click
   await checkVerification(token)
     .then(isVerified => {
-      console.log("THIS", isVerified)
+      console.log("THIS", isVerified);
       if (isVerified) {
         return res.status(200).send(`Verified. Thank you.<a href=${process.env.FRONT_URL}>Back to the website</a>`);
       }
@@ -36,7 +36,6 @@ routes.get("/user/authenticate/:token", async (req, res) => {
 // localhost:3001/api
 // User Login
 routes.post("/login/:email", async (req, res) => {
-  console.log("LOGIN REQUEST");
   // res.send('GET request to the homepage')
   if (!req.params.email) return;
   // POSTMAN TEST
@@ -52,6 +51,13 @@ routes.post("/login/:email", async (req, res) => {
     username
   };
 
+  console.log("LOGIN REQUEST", userInfo);
+  // return res.status(200).send("Email Verification Sent");
+
+  const response = {
+    verified: false
+  };
+
   await findUserWith(userInfo)
     .then(user => {
       // if user doesn't exist, create one
@@ -59,13 +65,18 @@ routes.post("/login/:email", async (req, res) => {
         const token = generateToken(email);
         createUser(userInfo, token);
         mailer(email, token);
-        return;
-      }
-      return user;
+        // waiting for user verification
+        res.status(205);
+      } else return user;
     })
     .then(user => {
+      console.log("USER", user);
       if (user) {
-        if (username && user.username !== username) updateUsername(user, username);
+        // if (username && user.username !== username) updateUsername(user, username);
+        if (username && user.username !== username) {
+
+          return res.status(404);
+        }
         // if isVerified = true => check token life
         const { isVerified, email } = user;
         const token = generateToken(email);
@@ -76,23 +87,22 @@ routes.post("/login/:email", async (req, res) => {
             // if token is expired, update isVerified false, generate new token and send email
             updateTokenAndIsVerified(user, token);
             mailer(email, token);
+            // reset content and waiting for user verification
+            res.status(205);
           } else {
             // if token is valid, update token and send ok to go main page
             updateToken(user, token);
-            // res.method = "get";
-
-            // res.writeHead(301, {
-            //   // location: process.env.FRONT_URL + "main"
-            //   Location: "http://localhost:3000/main"
-            // }).end();
-            return res.status(200).send({pass: true});
+            // good to redirect
+            res.status(200);
           }
         } else {
           updateTokenAndIsVerified(user, token);
           mailer(email, token);
+          // reset content and waiting for user verification
+          res.status(205);
         }
       }
-      return res.status(200).send({pass: false})
+      // return res.status(200).send({pass: false})
     })
     .catch(err => res.status(400).send(err));
   // SEND MAIL WITH TOKEN

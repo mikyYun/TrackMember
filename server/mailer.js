@@ -28,7 +28,7 @@ const mailer = async (email, token) => {
     subject: "Please confirm the authentication to login",
     text: "CLICK",
     html: `
-      <p>User Authenticate Confirmation Email FROM TrackMember</p>
+      <p>User Verification Email FROM TrackMember</p>
       <p1>This email valid only once</p1>
       <button style="background:#a6a6ff; padding:10px; border-radius:5px;">
       <a href="${process.env.AUTHENTICATE}${token}" style="text-tecoration:none">Authenticate</a>
