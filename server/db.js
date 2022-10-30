@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { User, Token } from "./models/model.js";
+import { User } from "./models/model.js";
 const DATABASE_URL = process.env.DATABASE_URL;
 const mongo = await mongoose.connect(DATABASE_URL);
 import Jwt from "jsonwebtoken";
@@ -19,7 +19,7 @@ db.once("connected", () => {
 const createUser = ({ username, email }, token) => {
   return User.create({ username, email }, (err, user) => {
     if (err) return console.error("Create Err: ", err);
-    console.log("CREATE", user);
+    console.log("CREATED");
     updateToken(user, token);
     // return doc;
   });
@@ -78,7 +78,6 @@ const checkVerification = (tokenFromEmail) => {
       if (!user) return false;
       const { isVerified, email, token } = user;
       if (isVerified) { // reuse email token
-        console.log("user");
         return false;
       } else {
         const decodedToken = decodeToken(token, email);

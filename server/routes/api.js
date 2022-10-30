@@ -15,28 +15,27 @@ routes.get("/user/:token", (req, res) => {
   // return res.writeHead(200, {
   //   Location: process.env.FRONT_URL
   // })
-})
+});
 
 // clicked email verification button
 routes.get("/user/authenticate/:token", async (req, res) => {
   console.log("VERIFICATIPN REQUEST");
-  
-  // if (!req.params.token) return;
-  // const token = req.params.token;
-  const token = "123"
-  // await checkVerification(token)
-  //   .then(isVerified => {
-  //     console.log("THIS", isVerified);
-  //     if (isVerified) {
-        res.redirect(process.env.BACK_URL + "api/user/" + token)
-  //       // return res.status(200).send(`Verified. Thank you.<a href=${process.env.FRONT_URL}>Back to the website</a>`);
-  //     }
-  //     return res.status(404).send(`Token already used or expired. Please try login again`);
-  //   })
-  //   .catch(err => console.error("WRONG TOKEN", err));
+
+  if (!req.params.token) return;
+  const token = req.params.token;
+  await checkVerification(token)
+    .then(isVerified => {
+      console.log("THIS", isVerified);
+      if (isVerified) {
+        // res.redirect(process.env.BACK_URL + "api/user/" + token);
+        // return res.status(200).send(`Verified. Thank you.<a href=${process.env.FRONT_URL}main>Go to Main Page</a>`);
+        return res.status(302).send(process.env.FRONT_URL + "main");
+      }
+      return res.status(404).send(`Token already used or expired. Please try login again`);
+    })
+    .catch(err => console.error("WRONG TOKEN", err));
 });
 
-// localhost:3001/api
 // User Login
 routes.post("/login/:email", async (req, res) => {
   // res.send('GET request to the homepage')
@@ -57,28 +56,23 @@ routes.post("/login/:email", async (req, res) => {
   console.log("LOGIN REQUEST", userInfo);
   // return res.status(200).send("Email Verification Sent");
 
-  const response = {
-    verified: false
-  };
-
   await findUserWith(userInfo)
     .then(user => {
+      // return res.status(404).send(userInfo)
       // if user doesn't exist, create one
+      userInfo.response = { wait: false, verify: false };
+
       if (!user) {
         const token = generateToken(email);
         createUser(userInfo, token);
         mailer(email, token);
         // waiting for user verification
-        res.status(205);
-      } else return user;
-    })
-    .then(user => {
-      console.log("USER", user);
-      if (user) {
+        userInfo.response.wait = true;
+        return res.status(205).send(userInfo);
+      } else {
         // if (username && user.username !== username) updateUsername(user, username);
         if (username && user.username !== username) {
-
-          return res.status(404);
+          return res.status(404).send(userInfo);
         }
         // if isVerified = true => check token life
         const { isVerified, email } = user;
@@ -91,22 +85,25 @@ routes.post("/login/:email", async (req, res) => {
             updateTokenAndIsVerified(user, token);
             mailer(email, token);
             // reset content and waiting for user verification
-            res.status(205);
+            userInfo.response.wait = true;
+            return res.status(205).send(userInfo);
           } else {
             // if token is valid, update token and send ok to go main page
             updateToken(user, token);
             // good to redirect
-            res.status(200);
+            userInfo.response.verify = true;
+            return res.status(200).send(userInfo);
           }
         } else {
           updateTokenAndIsVerified(user, token);
           mailer(email, token);
           // reset content and waiting for user verification
-          res.status(205);
+          userInfo.response.wait = true;
+          return res.status(205).send(userInfo);
         }
       }
-      // return res.status(200).send({pass: false})
     })
+    // 
     .catch(err => res.status(400).send(err));
   // SEND MAIL WITH TOKEN
   // mailer(email, token);

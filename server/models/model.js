@@ -28,26 +28,7 @@ const UserModel = new Schema({
   }
 })
 
-const TokenModel = Schema({
-  value: String,
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: "User"
-  },
-  expiredAt: {
-    type: Date,
-    expires: 60 * 60 * 24,
-    default: Date.now
-  }
-})
-
-// const SchemaModel = {
-//   UserModel,
-//   TokenModel
-// }
-// export default SchemaModel;
 
 const User = mongoose.model("UserModel", UserModel)
-const Token = mongoose.model("TokenModel", TokenModel)
-export {User, Token}
+export {User}
 

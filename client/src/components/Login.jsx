@@ -3,8 +3,9 @@ import {useNavigate} from "react-router-dom"
 import "../styles/Login.scss";
 import { fetchSetToken } from "../fetch/fetch";
 import Waiting from "./Waiting";
+const COOKIE_AGE = 60*60*48;
 
-const Login = () => {
+const Login = ({cookie}) => {
   const [email, setEmail] = React.useState("");
   const [username, setUsername] = React.useState("");
   const [waiting, setWaiting] = React.useState(false);
@@ -20,20 +21,21 @@ const Login = () => {
   const submitEmail = async (e) => {
     e.preventDefault();
     await fetchSetToken(email, username)
-      .then((res) => {
-        const code = res.status;
-        if (code === 200 || code === 205) {
-          if (code === 200) {
+    .then(res => res.json())
+    .then((res) => {
+      const {wait, verify, email, username} = res.response
+        if (wait || verify) {
+          if (verify) {
             // pass
+            cookie.set("TrackOwner", {email, username}, { path: "/" , maxAge: COOKIE_AGE})
             navigate("main")
           }
-          if (code === 205) {
+          if (wait) {
             // waiting for email verification
             setWaiting(true);
           }
           clearInput();
-        }
-        if (code === 404) {
+        } else {
           // retry
           setIsError(true);
           setTimeout(() => setIsError(false), 3000);

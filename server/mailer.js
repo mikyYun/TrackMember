@@ -6,11 +6,6 @@ import Jwt from "jsonwebtoken"
 
 dotenv.config();
 const mailer = async (email, token) => {
-  console.log("SENDING")
-  /** GENERATE TOKEN FOR 1 DAY */
-  // const token = generateToken(email);
-  // console.log("TOKEN", token)
-  
   
   const transporter = nodemailer.createTransport({
     service: "gmail",
