@@ -10,12 +10,6 @@ const routes = express.Router();
 /************* API ROUTER *************/
 
 
-routes.get("/user/:token", (req, res) => {
-  console.log("REDIRECT", req.params);
-  // return res.writeHead(200, {
-  //   Location: process.env.FRONT_URL
-  // })
-});
 
 // clicked email verification button
 routes.get("/user/authenticate/:token", async (req, res) => {
@@ -29,7 +23,7 @@ routes.get("/user/authenticate/:token", async (req, res) => {
       if (isVerified) {
         // res.redirect(process.env.BACK_URL + "api/user/" + token);
         // return res.status(200).send(`Verified. Thank you.<a href=${process.env.FRONT_URL}main>Go to Main Page</a>`);
-        return res.status(302).send(process.env.FRONT_URL + "main");
+        return res.status(302).send(`<a href=${process.env.FRONT_URL}main>Go Main Page</a>`);
       }
       return res.status(404).send(`Token already used or expired. Please try login again`);
     })
@@ -52,9 +46,6 @@ routes.post("/login/:email", async (req, res) => {
     email,
     username
   };
-
-  console.log("LOGIN REQUEST", userInfo);
-  // return res.status(200).send("Email Verification Sent");
 
   await findUserWith(userInfo)
     .then(user => {
