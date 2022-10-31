@@ -16,7 +16,7 @@ function App() {
         <Route path="/login" element={<Login cookie={cookie}/>} />
         <Route path="/" element={<Login cookie={cookie}/>} />
         <Route path="/main" element={<Main cookie={cookie}/>} />
-        <Route path="/main/:email" element={<MainRedirect cookie={cookie}/>} />
+        <Route path="/main/:token" element={<MainRedirect cookie={cookie}/>} />
         <Route path={`/:id`} element={<Block />} />
         <Route path={`/block`} element={<Block />} />
       </Routes>
