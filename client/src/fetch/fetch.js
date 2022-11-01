@@ -15,9 +15,9 @@ const fetchAuth = (token) => {
     headers: {
       'Accept': 'application/json, text/plain, */*',
       'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ token })
+    }
   })
 };
+
 
 export { fetchSetToken, fetchAuth };

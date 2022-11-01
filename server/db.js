@@ -19,7 +19,6 @@ db.once("connected", () => {
 const createUser = ({ username, email }, token) => {
   return User.create({ username, email }, (err, user) => {
     if (err) return console.error("Create Err: ", err);
-    console.log("CREATED");
     updateToken(user, token);
     // return doc;
   });

@@ -6,6 +6,12 @@ const RedirectMain = ({ cookie }) => {
   const navigate = useNavigate();
   // When Main component rendering, check params for userInfo
   // If no params, check cookies
+  const navigateTo = (path) => {
+    setTimeout(() => {
+      navigate(path);
+    }, 1000);
+  };
+
   React.useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     // const user = queryParams.get("user");
@@ -15,14 +21,29 @@ const RedirectMain = ({ cookie }) => {
     // console.log(user, email, userInfo)
     if (token) {
       fetchAuth(token)
-      .then(() => {
-
-      })
-      .catch(err => console.error(err))
-    } else if (userInfo) {
-      // navigate("/")
+        .then((res) => res.json())
+        .then((user) => {
+          const { username } = user;
+          if (!username) return navigateTo("/");
+          cookie.set("TrackOwner", { token, username });
+          navigateTo("main");
+        })
+        .catch((err) => {
+          console.error(err);
+          navigateTo("/");
+        });
+    } else if (userInfo && userInfo.token && userInfo.username) {
+      fetchAuth(userInfo.token)
+        .then((res) => res.json())
+        .then((user) => {
+          const { username } = user;
+          if (!username) return navigateTo("/");
+          navigateTo("main");
+        })
+        .catch((err) => console.error(err));
+    } else {
+      navigateTo("/");
     }
-
   }, []);
 
   // console.log("UER", userInfo)

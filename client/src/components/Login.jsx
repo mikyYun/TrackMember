@@ -1,11 +1,11 @@
 import React from "react";
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import "../styles/Login.scss";
 import { fetchSetToken } from "../fetch/fetch";
 import Waiting from "./Waiting";
-const COOKIE_AGE = 60*60*48;
+const COOKIE_AGE = 60 * 60 * 48;
 
-const Login = ({cookie}) => {
+const Login = ({ cookie }) => {
   const [email, setEmail] = React.useState("");
   const [username, setUsername] = React.useState("");
   const [waiting, setWaiting] = React.useState(false);
@@ -13,22 +13,35 @@ const Login = ({cookie}) => {
 
   const navigate = useNavigate();
 
+  const navigateTo = (path) => {
+    setTimeout(() => navigate(path), 1000);
+  };
+
   const clearInput = () => {
     setEmail("");
     setUsername("");
-  }
+  };
 
   const submitEmail = async (e) => {
     e.preventDefault();
     await fetchSetToken(email, username)
-    .then(res => res.json())
-    .then((res) => {
-      const {wait, verify, email, username} = res.response
+      .then(res => res.json())
+      .then(res => {
+        const { wait, verify, token } = res.response;
         if (wait || verify) {
           if (verify) {
             // pass
-            cookie.set("TrackOwner", {email, username}, { path: "/" , maxAge: COOKIE_AGE})
-            navigate("main")
+            const user = cookie.get("TrackOwner");
+            if (user) {
+              navigate("main");
+            } else {
+              cookie.set(
+                "TrackOwner",
+                { token, username },
+                { path: "/", maxAge: COOKIE_AGE }
+              );
+              navigateTo("main");
+            }
           }
           if (wait) {
             // waiting for email verification

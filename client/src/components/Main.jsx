@@ -1,17 +1,16 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const Main = ({cookie}) => {
-  const queryParams = new URLSearchParams(window.location.search)
-  // When Main component rendering, check params for userInfo 
+const Main = ({ cookie }) => {
+  // When Main component rendering, check params for userInfo
   // If no params, check cookies
+  const navigate = useNavigate();
+  React.useEffect(() => {
+    const userInfo = cookie.get("TrackOwner");
+    if (!userInfo) navigate("/");
+  }, []);
 
-  console.log(queryParams.get("user"))
-  const userInfo = cookie.get("TrackOwner");
-  console.log("UER", userInfo)
-  return (
-    <div>
-      MAIN
-    </div>
-  )
-}
+  return <div>MAIN</div>;
+};
 
 export default Main;
