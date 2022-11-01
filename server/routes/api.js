@@ -56,7 +56,7 @@ routes.post("/login/:email", async (req, res) => {
       if (!user) {
         const token = generateToken(email);
         createUser(userInfo, token);
-        mailer(email, token);
+        mailer({email, username, token});
         // waiting for user verification
         userInfo.response.wait = true;
         return res.status(205).send(userInfo);
@@ -74,7 +74,7 @@ routes.post("/login/:email", async (req, res) => {
           if (isExpiredToken) {
             // if token is expired, update isVerified false, generate new token and send email
             updateTokenAndIsVerified(user, token);
-            mailer(email, token);
+            mailer({email, username, token});
             // reset content and waiting for user verification
             userInfo.response.wait = true;
             return res.status(205).send(userInfo);
@@ -87,7 +87,7 @@ routes.post("/login/:email", async (req, res) => {
           }
         } else {
           updateTokenAndIsVerified(user, token);
-          mailer(email, token);
+          mailer({email, username, token});
           // reset content and waiting for user verification
           userInfo.response.wait = true;
           return res.status(205).send(userInfo);
@@ -106,5 +106,9 @@ routes.post("/login/:email", async (req, res) => {
   //   .then(() => res.status(200).send(true))
   //   .catch(err => res.status(400).send(err));
 });
+
+routes.post("/auth/:token", (req, res) => {
+  
+})
 
 export default routes;

@@ -9,4 +9,15 @@ const fetchSetToken = (email, username) => {
   })
 };
 
-export { fetchSetToken };
+const fetchAuth = (token) => {
+  return fetch(`http://localhost:3001/api/auth/${token}`, {
+    method: "POST",
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ token })
+  })
+};
+
+export { fetchSetToken, fetchAuth };
