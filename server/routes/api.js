@@ -7,23 +7,21 @@ import mailer from "../mailer.js";
 
 // console.log("MD", SchemaModel)
 const routes = express.Router();
+
 /************* API ROUTER *************/
-
-
-
-// clicked email verification button
-routes.get("/user/authenticate/:token", async (req, res) => {
-  console.log("VERIFICATIPN REQUEST");
+/** CLICKED EMAIL VERIFICATION BUTTON
+ * IF VERIFIED, REDIRECT main/:token which is render RedirectMain
+*/
+routes.get("/user/auth/:token", async (req, res) => {
 
   if (!req.params.token) return;
   const token = req.params.token;
   await checkVerification(token)
     .then(isVerified => {
-      console.log("THIS", isVerified);
       if (isVerified) {
         // res.redirect(process.env.BACK_URL + "api/user/" + token);
         // return res.status(200).send(`Verified. Thank you.<a href=${process.env.FRONT_URL}main>Go to Main Page</a>`);
-        return res.status(302).send(`<a href=${process.env.FRONT_URL}main>Go Main Page</a>`);
+        return res.status(302).send(`<a href=${process.env.FRONT_URL}main/${token}>Go Main Page</a>`);
       }
       return res.status(404).send(`Token already used or expired. Please try login again<br />
       <a href=${process.env.FRONT_URL}login>Go Login Page</a>`);
@@ -105,12 +103,12 @@ routes.post("/auth/:token", async (req, res) => {
   await findUserWith(token)
     .then(user => {
       if (!user) return res.status(404);
-      const { isVerified, email } = user;
+      const { isVerified, email, username } = user;
       if (isVerified) {
         const decodedToken = decodeToken(token, email);
         const isExpiredToken = isExpired(decodedToken.exp);
         if (!isExpiredToken) {
-          return res.status(200).send();
+          return res.status(200).send({username});
         }
       }
       return res.status(403);

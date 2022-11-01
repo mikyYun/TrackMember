@@ -7,9 +7,7 @@ const RedirectMain = ({ cookie }) => {
   // When Main component rendering, check params for userInfo
   // If no params, check cookies
   const navigateTo = (path) => {
-    setTimeout(() => {
-      navigate(path);
-    }, 1000);
+    setTimeout(() => navigate(path), 1000);
   };
 
   React.useEffect(() => {
@@ -18,7 +16,6 @@ const RedirectMain = ({ cookie }) => {
     // const email = queryParams.get("email");
     const token = queryParams.get("token");
     const userInfo = cookie.get("TrackOwner");
-    // console.log(user, email, userInfo)
     if (token) {
       fetchAuth(token)
         .then((res) => res.json())
