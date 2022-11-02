@@ -100,7 +100,7 @@ routes.post("/auth/:token", async (req, res) => {
   const token = req.params.token;
   if (!token) return res.status(403).send("Unauthrized access");
 
-  await findUserWith(token)
+  await findUserWith({ token })
     .then(user => {
       if (!user) return res.status(404);
       const { isVerified, email, username } = user;
@@ -108,7 +108,7 @@ routes.post("/auth/:token", async (req, res) => {
         const decodedToken = decodeToken(token, email);
         const isExpiredToken = isExpired(decodedToken.exp);
         if (!isExpiredToken) {
-          return res.status(200).send({username});
+          return res.status(200).send({ username });
         }
       }
       return res.status(403);

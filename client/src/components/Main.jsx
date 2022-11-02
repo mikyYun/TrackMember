@@ -1,16 +1,16 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import "../styles/Main.scss"
 
-const Main = ({ cookie }) => {
+const Main = ({ cookie, navigateTo }) => {
   // When Main component rendering, check params for userInfo
   // If no params, check cookies
-  const navigate = useNavigate();
   React.useEffect(() => {
     const userInfo = cookie.get("TrackOwner");
-    if (!userInfo) navigate("/");
+    if (!userInfo) navigateTo("/");
   }, []);
 
-  return <div>MAIN</div>;
+  return <div id="main">MAIN</div>;
 };
 
 export default Main;

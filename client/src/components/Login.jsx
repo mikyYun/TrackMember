@@ -5,17 +5,17 @@ import { fetchSetToken } from "../fetch/fetch";
 import Waiting from "./Waiting";
 const COOKIE_AGE = 60 * 60 * 48;
 
-const Login = ({ cookie }) => {
-  const [email, setEmail] = React.useState("");
-  const [username, setUsername] = React.useState("");
+const Login = ({ cookie, navigateTo }) => {
+  const [email, setEmail] = React.useState("mkyun2714@gmail.com");
+  const [username, setUsername] = React.useState("mike");
   const [waiting, setWaiting] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const navigateTo = (path) => {
-    setTimeout(() => navigate(path), 1000);
-  };
+  // const navigateTo = (path) => {
+  //   setTimeout(() => navigate(path), 1000);
+  // };
 
   const clearInput = () => {
     setEmail("");
@@ -25,22 +25,24 @@ const Login = ({ cookie }) => {
   const submitEmail = async (e) => {
     e.preventDefault();
     await fetchSetToken(email, username)
-      .then(res => res.json())
-      .then(res => {
-        const { wait, verify, token } = res.response;
+      .then((res) => res.json())
+      .then((res) => {
+        const { wait, verify } = res.response;
+        const { token } = res;
         if (wait || verify) {
           if (verify) {
             // pass
             const user = cookie.get("TrackOwner");
             if (user) {
-              navigate("main");
+              // navigate("main");
+              navigateTo(`main/token?token=${token}`, 0);
             } else {
               cookie.set(
                 "TrackOwner",
                 { token, username },
                 { path: "/", maxAge: COOKIE_AGE }
               );
-              navigateTo("main");
+              navigateTo("main", 1000);
             }
           }
           if (wait) {
@@ -84,10 +86,11 @@ const Login = ({ cookie }) => {
             required
             value={username}
           />
+          <br />
           <button onClick={submitEmail}>Login/Register</button>
-          <span className={isError ? "error" : "error error_hide"}>
+          <div className={isError ? "error" : "error error_hide"}>
             Please confirm your email or username
-          </span>
+          </div>
         </div>
       </form>
       <Waiting waiting={waiting} />
