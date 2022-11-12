@@ -19,5 +19,15 @@ const fetchAuth = (token) => {
   })
 };
 
+const fetchMap = () => {
+  return fetch(`http://localhost:3001/api/map/`, {
+    method: "POST",
+    header: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    }
+  })
+}
 
-export { fetchSetToken, fetchAuth };
+
+export { fetchSetToken, fetchAuth, fetchMap };

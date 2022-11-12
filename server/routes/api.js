@@ -116,4 +116,15 @@ routes.post("/auth/:token", async (req, res) => {
     .catch(err => res.status(404).send(err));
 });
 
+routes.post("/map", (req, res) => {
+  console.log(process.env.MAP_KEY)
+  const key = process.env.MAP_KEY;
+  const exp = Math.floor(Date.now() / 1000) + 60
+  const token = Jwt.sign({
+    key,
+    exp
+  }, String(exp))
+  res.status(200).send({token})
+});
+
 export default routes;
