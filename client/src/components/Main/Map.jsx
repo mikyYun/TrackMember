@@ -3,19 +3,12 @@ import jwtDecode from "jwt-decode";
 
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import { fetchMap } from "../../fetch/fetch";
+import Loading from "./Loading";
 
-// const key = async() => fetchMap()
-// .then((res) => res.json())
-// .then(({ token }) => {
-//   const decoded = jwtDecode(token);
-//   console.log(decoded);
-//   // key = decoded.key;
-//   return decoded.key
-// })
-// .catch((err) => console.error("Failed to load map", err));
+
 const containerStyle = {
-  width: "400px",
-  height: "400px",
+  width: "100vw",
+  height: "50vh",
 };
 
 const center = {
@@ -29,15 +22,22 @@ const Map = () => {
     fetchMap()
       .then((res) => res.json())
       .then(({ token }) => {
-        setKey(token)
-        // const decoded = jwtDecode(token);
-        // console.log(decoded);
-        // key = decoded.key;
-        // return decoded.key;
+        setKey(token);
       })
       .catch((err) => console.error("Failed to load map", err));
   }, []);
 
+  // console.log(navigator)
+  if (navigator.geolocation) {
+    console.log("TEST", navigator.geolocation)
+    navigator.geolocation.getCurrentPosition(position => {
+      const userLocation = {           
+        lat: position.coords.latitude, 
+        lng: position.coords.longitude,
+      };
+      console.log(userLocation)                                // ADDED
+    });
+  }
   // const { isLoaded } = useLoadScript({
   //   googleMapsApiKey: "AIzaSyBDpuazELaF84sQ9JL8De6pkVbTgmw66fQ",
   // });
@@ -51,7 +51,7 @@ const Map = () => {
       </GoogleMap>
     </LoadScript>
   ) : (
-    <div>Loading...</div>
+    <Loading />
   );
 };
 
