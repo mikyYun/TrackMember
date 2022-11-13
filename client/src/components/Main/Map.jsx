@@ -38,9 +38,7 @@ const Map = () => {
       console.log(userLocation)                                // ADDED
     });
   }
-  // const { isLoaded } = useLoadScript({
-  //   googleMapsApiKey: "AIzaSyBDpuazELaF84sQ9JL8De6pkVbTgmw66fQ",
-  // });
+
 
   // if (!isLoaded) return <div>Loading...</div>;
   return key ? (
