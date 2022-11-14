@@ -18,10 +18,9 @@ const Main = ({ cookie, navigateTo }) => {
 
   return (
     <div id="main">
-      MAIN
       {user}
       <Map />
-      <Control />
+      <Control user={user}/>
       <Members />
     </div>
   );

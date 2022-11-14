@@ -1,4 +1,36 @@
 @import "./_variables.scss";
 #main {
-  
+  transition: all .5s;
+  position: relative;
+  .add_form_container {
+    // width: 90%;
+    background-color: $warning_wh;
+    margin: auto;
+    .form_add {
+      margin-bottom: 1rem;
+      input {
+        padding-left: .5rem;
+      }
+      // left: 5vw;
+    }
+
+    .button:first-child {
+      margin-right: 2rem;
+    }
+  }
+}
+
+.button {
+  border-radius: $borderRadius;
+  padding: 0;
+  width: 5rem;
+  height: 2rem;
+  &.add,
+  &.confirm {
+    background-color: #4285F4;
+  }
+  &.remove,
+  &.cancel {
+    background-color: rgb(255, 58, 58);
+  }
 }

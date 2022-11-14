@@ -1,8 +1,12 @@
-const Add = () => {
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+
+const Add = ({addMember}) => {
+  
+
   return (
-    <div className="add_container">
-      ADD
-    </div>
+    <button className="button add" onClick={addMember}>
+      <PersonAddIcon />
+    </button>
   )
 }
 

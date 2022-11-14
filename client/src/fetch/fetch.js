@@ -29,5 +29,14 @@ const fetchMap = () => {
   })
 }
 
+const fetchAdd = (email, name, user) => {
+  return fetch(`http://localhost:3001/api/add/${user}?name=${name}&email=${email}`, {
+    method: "POST",
+    header: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },
+  })
+}
 
-export { fetchSetToken, fetchAuth, fetchMap };
+export { fetchSetToken, fetchAuth, fetchMap, fetchAdd };

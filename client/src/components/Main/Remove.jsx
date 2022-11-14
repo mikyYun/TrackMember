@@ -1,8 +1,10 @@
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+
 const Remove = () => {
   return (
-    <div className="remove_container">
-      REMOVE
-    </div>
+    <button className="button remove">
+      <PersonRemoveIcon />
+    </button>
   )
 }
 

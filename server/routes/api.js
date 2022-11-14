@@ -126,4 +126,11 @@ routes.post("/map", (req, res) => {
   res.status(200).send({token})
 });
 
+routes.post("/add/:user", (req, res) => {
+  // if (!req.params.user || !req.query) 
+  res.status(403);
+  const user = req.params.user // owner
+  const {email, name} = req.query 
+})
+
 export default routes;
