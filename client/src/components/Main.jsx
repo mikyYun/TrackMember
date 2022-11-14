@@ -2,6 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Main.scss";
 import Map from "./Main/Map";
+import Control from "./Main/Control";
+import Members from "./Main/Members";
 
 const Main = ({ cookie, navigateTo }) => {
   const [user, setUser] = React.useState("")
@@ -19,6 +21,8 @@ const Main = ({ cookie, navigateTo }) => {
       MAIN
       {user}
       <Map />
+      <Control />
+      <Members />
     </div>
   );
 };
