@@ -1,17 +1,20 @@
-# TrackMember
-This is an app built with MERN and TypeScript.
+# Tracking
+This is an app built with MERN.
+
+## Concept
+
 
 ## Stacks
 * Plan: React, React Router Dom, Express, MongoDB(mongoose), SCSS
 * APIs: Map APIs, text, email
 
 ## Flows
-* User can login with email or text verification
-* Add or Remove members
-* Added member get confirmation email or text
-* Only added verified, confirmed member
-* Share their current location
-* Send alert
+* ~~`User can login with email or text verification~~
+* ~~Add or Remove members~~
+* ~~Added member get confirmation email or text~~
+* ~~Only added verified, confirmed member~~
+* ~~Share their current location~~
+* ~~Send alert~~
 
 ### Verification
 * First login will have 48 hours token

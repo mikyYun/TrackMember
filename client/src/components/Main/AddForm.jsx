@@ -48,9 +48,9 @@ const AddForm = ({hideForm, user}) => {
         </div>
       </form>
       <div className="button_container">
-        <button className="button cancel" onClick={hideForm}> Cancel</button>
+        <button className="button cancel" onClick={hideForm}>Cancel</button>
 
-        <button className="button confirm" onClick={startAdd}> Confirm</button>
+        <button className="button confirm" onClick={startAdd}>Invite</button>
       </div>
     </div>
   );

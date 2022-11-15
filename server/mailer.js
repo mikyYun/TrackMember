@@ -35,8 +35,6 @@ const mailer = async ({email, token}) => {
     if (err) return console.log("ERROR", err);
     transporter.close();
   })
-
-
 }
 
-export default mailer;
+export default {mailer};

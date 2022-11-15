@@ -131,6 +131,7 @@ routes.post("/add/:user", (req, res) => {
   res.status(403);
   const user = req.params.user // owner
   const {email, name} = req.query 
+  console.log(user, email, name)
 })
 
 export default routes;
